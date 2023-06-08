@@ -25,6 +25,7 @@ jobs:
           echo ${{ steps.own_version.outputs.release }}
   
   build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
