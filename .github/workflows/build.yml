@@ -93,6 +93,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
           SLACK_USERNAME: ${{ secrets.SLACK_USERNAME }}
+          SLACK_ICON: ${{ secrets.SLACK_ICON }}
           SLACK_MESSAGE: "${{ github.repository }} build succeeded!"
           SLACK_TITLE: "Postfix-exporter Compile Status"
         if: env.WORKFLOW_CONCLUSION == 'success'
