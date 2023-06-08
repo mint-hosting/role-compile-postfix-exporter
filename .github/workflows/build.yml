@@ -27,7 +27,9 @@ jobs:
           mv $GITHUB_WORKSPACE $HOME/go/src/github.com/kumina/postfix_exporter
 
       - name: Build Binary
-        run: cd $HOME/go/src/github.com/kumina/postfix_exporter && go build -a -tags static_all -o postfix_exporter
+        run: |
+          cd $HOME/go/src/github.com/kumina/postfix_exporter
+          go build -o postfix_exporter
 
       - name: Create Release
         id: create_release
