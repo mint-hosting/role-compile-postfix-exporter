@@ -77,3 +77,35 @@ jobs:
           asset_path: /home/runner/postfix_exporter/postfix_exporter
           asset_name: postfix_exporter
           asset_content_type: application/octet-stream
+  
+  slackNotification:
+    needs: build
+    if: always()
+    name: Send notifications
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v1
+      - name: Slack Notification if build complete
+        uses: mint-hosting/action-slack-notify@5.0
+        with:
+          status: ${{ env.WORKFLOW_CONCLUSION }}
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_USERNAME: ${{ secrets.SLACK_USERNAME }}
+          SLACK_MESSAGE: "${{ github.repository }} build succeeded!"
+          SLACK_TITLE: "Postfix-exporter Compile Status"
+        if: env.WORKFLOW_CONCLUSION == 'success'
+      
+      - uses: mint-hosting/action-slack-notify@5.0
+        with:
+          status: ${{ env.WORKFLOW_CONCLUSION }}
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_USERNAME: ${{ secrets.SLACK_USERNAME }}
+          SLACK_ICON: ${{ secrets.SLACK_ICON }}
+          SLACK_COLOR: "#ff0000"
+          SLACK_MESSAGE: "${{ github.repository }} build failed!"
+          SLACK_TITLE: "Postfix-exporter Compile Status"
+        if: env.WORKFLOW_CONCLUSION == 'failure'
