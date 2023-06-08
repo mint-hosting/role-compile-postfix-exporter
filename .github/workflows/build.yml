@@ -15,58 +15,59 @@ jobs:
           echo
 
       - id: own_version
-        uses: pozetroninc/github-action-get-latest-release@master
+        uses: InsonusK/get-latest-release@v1.0.1
         with:
-          repository: ${{ github.repository }}
+          myToken: ${{ github.token }}
+          view_top: 1
         
       - name: Show repository info
         run: |
           echo ${{ env.SOURCE_VERSION }}
-          echo ${{ steps.own_version.outputs.release }}
+          echo ${{ steps.own_version.outputs.tag_name }}
   
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Install libsystemd-dev
-        run: sudo apt-get update && sudo apt-get install -y libsystemd-dev
-
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.16
-
-      - name: Build Binary
-        run: |
-          git clone https://github.com/kumina/postfix_exporter.git $HOME/postfix_exporter
-          cd $HOME/postfix_exporter
-          go build -a -tags static_all
-
-      - name: Get Postfix exporter release version
-        run: |
-          echo "VERSION=$(curl -s https://api.github.com/repos/kumina/postfix_exporter/releases/latest | jq -r .tag_name)" >> $GITHUB_ENV
-      
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          body: |
-            This is an automated release created by the GitHub Actions workflow.
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/postfix_exporter/postfix_exporter
-          asset_name: postfix_exporter
-          asset_content_type: application/octet-stream
+  #build:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Checkout Repository
+  #      uses: actions/checkout@v2
+#
+  #    - name: Install libsystemd-dev
+  #      run: sudo apt-get update && sudo apt-get install -y libsystemd-dev
+#
+  #    - name: Set up Go
+  #      uses: actions/setup-go@v2
+  #      with:
+  #        go-version: 1.16
+#
+  #    - name: Build Binary
+  #      run: |
+  #        git clone https://github.com/kumina/postfix_exporter.git $HOME/postfix_exporter
+  #        cd $HOME/postfix_exporter
+  #        go build -a -tags static_all
+#
+  #    - name: Get Postfix exporter release version
+  #      run: |
+  #        echo "VERSION=$(curl -s https://api.github.com/repos/kumina/postfix_exporter/releases/latest | jq -r .tag_name)" >> $GITHUB_ENV
+  #    
+  #    - name: Create Release
+  #      id: create_release
+  #      uses: actions/create-release@v1
+  #      env:
+  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #      with:
+  #        tag_name: v${{ env.VERSION }}
+  #        release_name: Release ${{ env.VERSION }}
+  #        body: |
+  #          This is an automated release created by the GitHub Actions workflow.
+  #        draft: false
+  #        prerelease: false
+#
+  #    - name: Upload Release Asset
+  #      uses: actions/upload-release-asset@v1
+  #      env:
+  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #      with:
+  #        upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #        asset_path: /home/runner/postfix_exporter/postfix_exporter
+  #        asset_name: postfix_exporter
+  #        asset_content_type: application/octet-stream
