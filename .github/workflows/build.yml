@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Get latest release versions from source postfix-exporter github
         run: |
-          echo "SOURCE_VERSION=$(curl -s https://api.github.com/repos/kumina/postfix_exporter/releases/latest | jq -r .tag_name)" >> $GITHUB_ENV
+          echo "SOURCE_VERSION=v$(curl -s https://api.github.com/repos/kumina/postfix_exporter/releases/latest | jq -r .tag_name)" >> $GITHUB_ENV
           echo
 
       - id: own_version
