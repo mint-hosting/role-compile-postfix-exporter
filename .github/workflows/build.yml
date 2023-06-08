@@ -21,8 +21,13 @@ jobs:
         with:
           go-version: 1.16
 
+      - name: Prepare Go module structure
+        run: |
+          mkdir -p $HOME/go/src/github.com/kumina
+          mv $GITHUB_WORKSPACE $HOME/go/src/github.com/kumina/postfix_exporter
+
       - name: Build Binary
-        run: go build -o postfix_exporter github.com/kumina/postfix_exporter
+        run: cd $HOME/go/src/github.com/kumina/postfix_exporter && go build -a -tags static_all -o postfix_exporter
 
       - name: Create Release
         id: create_release
@@ -43,6 +48,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./postfix_exporter
+          asset_path: $HOME/go/src/github.com/kumina/postfix_exporter/postfix_exporter
           asset_name: postfix_exporter
           asset_content_type: application/octet-stream
