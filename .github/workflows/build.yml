@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -21,13 +18,13 @@ jobs:
       - name: Set up GOPATH
         run: |
           mkdir -p $HOME/go/src/github.com/kumina
-          ln -s $GITHUB_WORKSPACE $HOME/go/src/github.com/kumina/postfix_exporter
+          git clone https://github.com/kumina/postfix_exporter.git $HOME/go/src/github.com/kumina/postfix_exporter
 
       - name: Install libsystemd-dev
         run: sudo apt-get update && sudo apt-get install -y libsystemd-dev
 
       - name: Build Binary
-        run: go build -o $GITHUB_WORKSPACE/postfix_exporter github.com/kumina/postfix_exporter
+        run: go build -a -tags static_all -o $HOME/go/src/github.com/kumina/postfix_exporter/postfix_exporter github.com/kumina/postfix_exporter
 
       - name: Create Release
         id: create_release
@@ -48,6 +45,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./postfix_exporter
+          asset_path: $HOME/go/src/github.com/kumina/postfix_exporter/postfix_exporter
           asset_name: postfix_exporter
           asset_content_type: application/octet-stream
