@@ -6,9 +6,25 @@ on:
       - main
 
 jobs:
-  build:
+  pre_check:
     runs-on: ubuntu-latest
+    steps:
+      - name: Get latest release versions from source postfix-exporter github
+        run: |
+          echo "SOURCE_VERSION=$(curl -s https://api.github.com/repos/kumina/postfix_exporter/releases/latest | jq -r .tag_name)" >> $GITHUB_ENV
+          echo
 
+      - id: own_version
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          repository: ${{ github.repository }}
+        
+      - name: Show repository info
+        run: |
+          echo ${{ env.SOURCE_VERSION }}
+          echo ${{ steps.own_version.outputs.release }}
+  
+  build:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
