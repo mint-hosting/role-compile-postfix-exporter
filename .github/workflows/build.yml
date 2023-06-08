@@ -25,7 +25,7 @@ jobs:
           if ${{ env.SOURCE_VERSION != steps.own_version.outputs.tag_name }}; then
             echo "::set-output name=run_build::yes"
           else
-            exit 1
+            exit 0
           fi
   build:
     runs-on: ubuntu-latest
