@@ -26,8 +26,6 @@ jobs:
           git clone https://github.com/kumina/postfix_exporter.git $HOME/postfix_exporter
           cd $HOME/postfix_exporter
           go build -a -tags static_all
-          pwd
-          stat postfix_exporter
 
       - name: Create Release
         id: create_release
@@ -48,6 +46,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./postfix_exporter
+          asset_path: /home/runner/postfix_exporter/postfix_exporter
           asset_name: postfix_exporter
           asset_content_type: application/octet-stream
