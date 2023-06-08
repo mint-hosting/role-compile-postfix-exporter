@@ -25,7 +25,8 @@ jobs:
         run: |
           git clone https://github.com/kumina/postfix_exporter.git $HOME/postfix_exporter
           cd $HOME/postfix_exporter
-          go build -o postfix_exporter
+          go build -a -tags static_all
+          ls -la
 
       - name: Create Release
         id: create_release
