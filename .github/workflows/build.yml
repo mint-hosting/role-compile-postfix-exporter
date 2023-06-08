@@ -19,10 +19,18 @@ jobs:
         with:
           myToken: ${{ github.token }}
           view_top: 1
-          
+        
+      - id: compare_version
+        run: |
+          if ${{ env.SOURCE_VERSION != steps.own_version.outputs.tag_name }}; then
+            echo "::set-output name=run_build::yes"
+          else
+            exit 1
+          fi
   build:
-    if: ${{ env.SOURCE_VERSION != steps.own_version.outputs.tag_name }}
     runs-on: ubuntu-latest
+    needs: pre_check
+    if: needs.compare_version.run_build == 'yes'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
