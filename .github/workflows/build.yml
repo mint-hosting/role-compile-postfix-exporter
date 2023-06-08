@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
 
 jobs:
   build:
@@ -29,14 +27,18 @@ jobs:
           cd $HOME/postfix_exporter
           go build -a -tags static_all
 
+      - name: Get Postfix exporter release version
+        run: |
+          echo "VERSION=$(curl -s https://api.github.com/repos/kumina/postfix_exporter/releases/latest | jq -r .tag_name)" >> $GITHUB_ENV
+      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: release-${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: v${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
           body: |
             This is an automated release created by the GitHub Actions workflow.
           draft: false
