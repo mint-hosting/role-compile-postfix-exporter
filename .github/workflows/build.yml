@@ -9,7 +9,7 @@ on:
 
 jobs:
   pre_check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Get latest release versions from source postfix-exporter github
         run: |
@@ -30,7 +30,7 @@ jobs:
             exit 0
           fi
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: pre_check
     if: needs.compare_version.run_build == 'yes'
     steps:
