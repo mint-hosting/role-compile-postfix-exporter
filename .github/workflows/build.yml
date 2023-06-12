@@ -8,31 +8,8 @@ on:
       - main
 
 jobs:
-  pre_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get latest release versions from source postfix-exporter github
-        run: |
-          echo "SOURCE_VERSION=v$(curl -s https://api.github.com/repos/kumina/postfix_exporter/releases/latest | jq -r .tag_name)" >> $GITHUB_ENV
-          echo
-
-      - id: own_version
-        uses: InsonusK/get-latest-release@v1.0.1
-        with:
-          myToken: ${{ github.token }}
-          view_top: 1
-        
-      - id: compare_version
-        run: |
-          if ${{ env.SOURCE_VERSION != steps.own_version.outputs.tag_name }}; then
-            echo "::set-output name=run_build::yes"
-          else
-            exit 0
-          fi
   build:
     runs-on: ubuntu-20.04
-    needs: pre_check
-    if: needs.compare_version.run_build == 'yes'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
